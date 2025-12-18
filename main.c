@@ -82,22 +82,25 @@ void	draw_line(t_data *img, double beginx, double beginy, double endx, double en
 {
 	double	dx = endx - beginx;
 	double	dy = endy - beginy;
-	double	steps;	
+	double	steps;
+	double	x_inc;
+	double	y_inc;
+	int	i = 0;
+	double	x = beginx;
+	double	y = beginy;
 
-	if (abs(dx) > abs(dy))
-		steps = abs(dx);
+	if (fabs(dx) > fabs(dy))
+		steps = fabs(dx);
 	else
-		steps = abs(dy);
-
-	while (1)
+		steps = fabs(dy);
+	x_inc = dx / steps;
+	y_inc = dy / steps;
+	while (i < steps)
 	{
-		if (beginx == endx && beginy == endy)
-			break;
-		my_mlx_pixel_put(img, beginx, beginy, 0x00FF0000);
-		if (beginx != endx)
-			beginx++;
-		if (beginy != endy)
-			beginy++;
+		my_mlx_pixel_put(img, (int)x, (int)y, 0x00FF0000);
+		x += x_inc;
+		y += y_inc;
+		i++;
 	}
 }
 
@@ -106,10 +109,10 @@ void	draw_player(t_game *game)
 	int	endx;
 	int	endy;
 
-	endx = game->px + game->pdx * 50;
-	endy = game->py + game->pdy * 50;
+	endx = game->px + game->pdx * 30;
+	endy = game->py + game->pdy * 30;
 	draw_square(&game->img, game->px, game->py, 8, 0x00FF0000);
-	//draw_line(&game->img, game->px, game->py, endx, endy);
+	draw_line(&game->img, game->px, game->py, endx, endy);
 }
 
 void	draw_map(t_data *img)
@@ -139,7 +142,7 @@ int	key_press(int key_code, t_game *game)
 	double	rot_speed;
 	
 	mov_speed = 5.0;
-	rot_speed = 0.5;
+	rot_speed = 0.1;
 	if (key_code == 65362) // up
 	{
 		game->px += game->pdx * mov_speed;
