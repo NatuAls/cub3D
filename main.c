@@ -1,27 +1,36 @@
 #include <mlx.h>
 #include <math.h>
 
-typedef struct	s_data {
+typedef struct	s_img {
 	void	*img;
 	char	*addr;
 	int		bits_per_pixel;
 	int		line_length;
 	int		endian;
-}		t_data;
+}		t_img;
+
+typedef	struct	s_player 
+{
+	double	x;
+	double	y;
+	double	dx;
+	double	dy;
+	double	a;
+	int	up_pressed;
+	int	l_pressed;
+	int	r_pressed;
+	int	dn_pressed;
+}		t_player;
 
 typedef struct	s_game 
 {
-	void	*mlx;
-	void	*mlx_win;
-	double	px;
-	double	py;
-	double	pdx;
-	double	pdy;
-	double	pa;
-	t_data	img;
+	void		*mlx;
+	void		*mlx_win;
+	t_player	player;
+	t_img		img;
 }		t_game;
 
-void	my_mlx_pixel_put(t_data *data, int x, int y, int color)
+void	my_mlx_pixel_put(t_img *data, int x, int y, int color)
 {
 	char	*dst;
 
@@ -29,7 +38,7 @@ void	my_mlx_pixel_put(t_data *data, int x, int y, int color)
 	*(unsigned int*)dst = color;
 }
 
-void	draw_square(t_data *img, int x, int y, int size, int color)
+void	draw_square(t_img *img, int x, int y, int size, int color)
 {
 	int	i;
 	int	j;
@@ -60,7 +69,7 @@ int	map[] =
 	1,1,1,1,1,1,1,1,
 };
 
-void	draw_background_map(t_data *img)
+void	draw_background_map(t_img *img)
 {
 	int	i;
 	int	j;
@@ -78,7 +87,7 @@ void	draw_background_map(t_data *img)
 	}
 }
 
-void	draw_line(t_data *img, double beginx, double beginy, double endx, double endy)
+void	draw_line(t_img *img, double beginx, double beginy, double endx, double endy)
 {
 	double	dx = endx - beginx;
 	double	dy = endy - beginy;
@@ -109,13 +118,13 @@ void	draw_player(t_game *game)
 	int	endx;
 	int	endy;
 
-	endx = game->px + game->pdx * 30;
-	endy = game->py + game->pdy * 30;
-	draw_square(&game->img, game->px, game->py, 8, 0x00FF0000);
-	draw_line(&game->img, game->px, game->py, endx, endy);
+	endx = game->player.x + game->player.dx * 30;
+	endy = game->player.y + game->player.dy * 30;
+	draw_square(&game->img, game->player.x, game->player.y, 8, 0x00FF0000);
+	draw_line(&game->img, game->player.x, game->player.y, endx, endy);
 }
 
-void	draw_map(t_data *img)
+void	draw_map(t_img *img)
 {
 	int	i;
 	int	j;
@@ -138,32 +147,58 @@ void	draw_map(t_data *img)
 
 int	key_press(int key_code, t_game *game)
 {
+	if (key_code == 65362) // up
+		game->player.up_pressed = 1;
+	if (key_code == 65361) // <-
+		game->player.l_pressed = 1;
+	if (key_code == 65364) //down
+		game->player.dn_pressed = 1;
+	if (key_code == 65363) // ->
+		game->player.r_pressed = 1;
+	return 0;
+}
+
+int	key_release(int key_code, t_game *game)
+{
+	if (key_code == 65362) // up
+		game->player.up_pressed = 0;
+	if (key_code == 65361) // <-
+		game->player.l_pressed = 0;
+	if (key_code == 65364) //down
+		game->player.dn_pressed = 0;
+	if (key_code == 65363) // ->
+		game->player.r_pressed = 0;
+	return 0;
+}
+
+int	move_player(t_game *game)
+{
 	double	mov_speed;
 	double	rot_speed;
 	
-	mov_speed = 5.0;
-	rot_speed = 0.1;
-	if (key_code == 65362) // up
+	mov_speed = 0.5;
+	rot_speed = 0.00999;
+	if (game->player.up_pressed) // up
 	{
-		game->px += game->pdx * mov_speed;
-		game->py += game->pdy * mov_speed;
+		game->player.x += game->player.dx * mov_speed;
+		game->player.y += game->player.dy * mov_speed;
 	}
-	if (key_code == 65361) // <-
+	if (game->player.l_pressed) // <-
 	{
-		game->pa -= rot_speed;
-		game->pdx = cos(game->pa);
-		game->pdy = sin(game->pa);
+		game->player.a -= rot_speed;
+		game->player.dx = cos(game->player.a);
+		game->player.dy = sin(game->player.a);
 	}
-	if (key_code == 65364) //down
+	if (game->player.dn_pressed) //down
 	{
-		game->px -= game->pdx * mov_speed;
-		game->py -= game->pdy * mov_speed;
+		game->player.x -= game->player.dx * mov_speed;
+		game->player.y -= game->player.dy * mov_speed;
 	}
-	if (key_code == 65363) // ->
+	if (game->player.r_pressed) // ->
 	{
-		game->pa += rot_speed;
-		game->pdx = cos(game->pa);
-		game->pdy = sin(game->pa);
+		game->player.a += rot_speed;
+		game->player.dx = cos(game->player.a);
+		game->player.dy = sin(game->player.a);
 	}
 	draw_background_map(&game->img);
 	draw_map(&game->img);
@@ -183,15 +218,21 @@ int	main(int argc, char **argv)
 	game.mlx_win = mlx_new_window(game.mlx, 1920, 1080, "cub3d");
 	game.img.img = mlx_new_image(game.mlx, 1920, 1080);
 	game.img.addr = mlx_get_data_addr(game.img.img, &game.img.bits_per_pixel, &game.img.line_length, &game.img.endian);
-	game.px = 300;
-	game.py = 300;
-	game.pa = 3 * M_PI_2;
-	game.pdx = cos(game.pa);
-	game.pdy = sin(game.pa);
+	game.player.x = 300;
+	game.player.y = 300;
+	game.player.a = 3 * M_PI_2;
+	game.player.dx = cos(game.player.a);
+	game.player.dy = sin(game.player.a);
+	game.player.up_pressed = 0;
+	game.player.l_pressed = 0;
+	game.player.r_pressed = 0;
+	game.player.dn_pressed = 0;
 	draw_map(&game.img);
 	draw_player(&game);
 	mlx_put_image_to_window(game.mlx, game.mlx_win, game.img.img, 0, 0);
-	mlx_key_hook(game.mlx_win, key_press, &game);
+	mlx_hook(game.mlx_win, 2, 1, key_press, &game);
+	mlx_hook(game.mlx_win, 3, 2, key_release, &game);
+	mlx_loop_hook(game.mlx, move_player, &game);
 	mlx_loop(game.mlx);
 	return (0);
 }
