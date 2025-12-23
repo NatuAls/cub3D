@@ -305,13 +305,23 @@ int	move_player(t_game *game)
 {
 	double	mov_speed;
 	double	rot_speed;
+	int	mpx;
+	int	mpy;
 	
 	mov_speed = 0.5;
 	rot_speed = 0.00999;
 	if (game->player.up_pressed) // up
 	{
-		game->player.x += game->player.dx * mov_speed;
-		game->player.y += game->player.dy * mov_speed;
+		mpx = (int)(game->player.x + game->player.dx * mov_speed) / 64;
+		mpy = (int)(game->player.y + game->player.dy * mov_speed) / 64;
+		if ((mpx >= 0 && mpx < 64) && (mpy >= 0 && mpy < 8))
+		{
+			if (map[mpy * mapX + mpx] != 1)
+			{
+				game->player.x += game->player.dx * mov_speed;
+				game->player.y += game->player.dy * mov_speed;
+			}
+		}
 	}
 	if (game->player.l_pressed) // <-
 	{
@@ -323,8 +333,16 @@ int	move_player(t_game *game)
 	}
 	if (game->player.dn_pressed) //down
 	{
-		game->player.x -= game->player.dx * mov_speed;
-		game->player.y -= game->player.dy * mov_speed;
+		mpx = (int)(game->player.x - game->player.dx * mov_speed) / 64;
+		mpy = (int)(game->player.y - game->player.dy * mov_speed) / 64;
+		if ((mpx >= 0 && mpx < 64) && (mpy >= 0 && mpy < 8))
+		{
+			if (map[mpy * mapX + mpx] != 1)
+			{
+				game->player.x -= game->player.dx * mov_speed;
+				game->player.y -= game->player.dy * mov_speed;
+			}
+		}
 	}
 	if (game->player.r_pressed) // ->
 	{
