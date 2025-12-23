@@ -22,6 +22,14 @@ typedef	struct	s_player
 	int	dn_pressed;
 }		t_player;
 
+typedef	struct	s_point
+{
+	double	x;
+	double	y;
+	double	a;
+	double	dist;
+}		t_point;
+
 typedef struct	s_game 
 {
 	void		*mlx;
@@ -60,8 +68,8 @@ int	mapX=8, mapY=8, mapS=64;
 int	map[] =
 {
 	1,1,1,1,1,1,1,1,
-	1,0,0,0,0,0,0,1,
-	1,0,0,0,0,0,0,1,
+	1,0,0,0,1,0,0,1,
+	1,0,0,0,0,1,0,1,
 	1,0,0,0,0,0,0,1,
 	1,0,0,0,0,0,0,1,
 	1,0,0,0,0,0,0,1,
@@ -145,6 +153,128 @@ void	draw_map(t_img *img)
 	}
 }
 
+t_point set_dist(t_player *p, t_point *r)
+{
+	double	dist;
+
+	dist = sqrt(((r->x - p->x) * (r->x - p->x)) + ((r->y - p->y) * (r->y - p->y)));
+	r->dist = dist;
+	return (*r);
+}
+
+t_point	get_h_dist(t_player *p)
+{
+	t_point	r;
+	double	xo;
+	double	yo;
+	int	my;
+	int	mx;
+	int	mp;
+	int	dof;
+	
+	dof = 0;
+	r.a = p->a;
+	if (r.a > M_PI)
+	{
+		r.y = (((int)p->y / 64) * 64) - 0.0001;
+		r.x = (p->y - r.y) * -1/tan(p->a) + p->x;
+		yo = -64;
+		xo = -yo * -1/tan(p->a);
+	}
+	else if (r.a < M_PI)
+	{
+		r.y = (((int)p->y / 64) * 64) + 64;
+		r.x = (p->y - r.y) * -1/tan(p->a) + p->x;
+		yo = 64;
+		xo = -yo * -1/tan(p->a);
+	}
+	else
+	{
+		r.y = p->y;
+		r.x = p->x;
+		dof = 8;
+	}
+	while (dof < 8)
+	{
+		my = (int)(r.y / 64);
+		mx = (int)(r.x / 64);
+		mp = my * mapX + mx;
+		if (mp >= 0 && mp < 64 && map[mp] == 1)
+			return (set_dist(p, &r));
+		else
+		{
+			r.y += yo;
+			r.x += xo;
+			dof++;
+		}
+	}
+	r.dist = 100000;
+	return (r);
+}
+
+t_point	get_v_dist(t_player *p)
+{
+	t_point	r;
+	double	xo;
+	double	yo;
+	int	my;
+	int	mx;
+	int	mp;
+	int	dof;
+	
+	dof = 0;
+	r.a = p->a;
+	if (r.a > M_PI_2 && r.a < 3 * M_PI_2)
+	{
+		r.x = (((int)p->x / 64) * 64) - 0.0001;
+		r.y = (p->x - r.x) * -tan(p->a) + p->y;
+		xo = -64;
+		yo = -xo * -tan(p->a);
+	}
+	else if (r.a < M_PI_2 || r.a > 3 * M_PI_2)
+	{
+		r.x = (((int)p->x / 64) * 64) + 64;
+		r.y = (p->x - r.x) * -tan(p->a) + p->y;
+		xo = 64;
+		yo = -xo * -tan(p->a);
+	}
+	else
+	{
+		r.y = p->y;
+		r.x = p->x;
+		dof = 8;
+	}
+	while (dof < 8)
+	{
+		my = (int)(r.y / 64);
+		mx = (int)(r.x / 64);
+		mp = my * mapX + mx;
+		if (mp >= 0 && mp < 64 && map[mp] == 1)
+			return (set_dist(p, &r));
+		else
+		{
+			r.y += yo;
+			r.x += xo;
+			dof++;
+		}
+	}
+	r.dist = 100000;
+	return (r);
+}
+
+void	draw_rays(t_game *game)
+{
+	t_point vp;
+	t_point	hp;
+
+	vp = get_v_dist(&game->player);
+	hp = get_h_dist(&game->player);
+	if (vp.dist < hp.dist)
+		draw_line(&game->img, game->player.x, game->player.y, vp.x, vp.y);
+	else
+		draw_line(&game->img, game->player.x, game->player.y, hp.x, hp.y);
+}
+
 int	key_press(int key_code, t_game *game)
 {
 	if (key_code == 65362) // up
@@ -186,6 +316,8 @@ int	move_player(t_game *game)
 	if (game->player.l_pressed) // <-
 	{
 		game->player.a -= rot_speed;
+		if (game->player.a < 0)
+			game->player.a += 2 * M_PI;
 		game->player.dx = cos(game->player.a);
 		game->player.dy = sin(game->player.a);
 	}
@@ -197,12 +329,15 @@ int	move_player(t_game *game)
 	if (game->player.r_pressed) // ->
 	{
 		game->player.a += rot_speed;
+		if (game->player.a > 2 * M_PI)
+			game->player.a -= 2 * M_PI;
 		game->player.dx = cos(game->player.a);
 		game->player.dy = sin(game->player.a);
 	}
 	draw_background_map(&game->img);
 	draw_map(&game->img);
 	draw_player(game);
+	draw_rays(game);
 	mlx_put_image_to_window(game->mlx, game->mlx_win, game->img.img, 0, 0);
 	return (0);
 }
@@ -220,7 +355,7 @@ int	main(int argc, char **argv)
 	game.img.addr = mlx_get_data_addr(game.img.img, &game.img.bits_per_pixel, &game.img.line_length, &game.img.endian);
 	game.player.x = 300;
 	game.player.y = 300;
-	game.player.a = 3 * M_PI_2;
+	game.player.a = 0;
 	game.player.dx = cos(game.player.a);
 	game.player.dy = sin(game.player.a);
 	game.player.up_pressed = 0;
@@ -229,6 +364,7 @@ int	main(int argc, char **argv)
 	game.player.dn_pressed = 0;
 	draw_map(&game.img);
 	draw_player(&game);
+	draw_rays(&game);
 	mlx_put_image_to_window(game.mlx, game.mlx_win, game.img.img, 0, 0);
 	mlx_hook(game.mlx_win, 2, 1, key_press, &game);
 	mlx_hook(game.mlx_win, 3, 2, key_release, &game);
