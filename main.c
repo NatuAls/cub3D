@@ -1,6 +1,9 @@
 #include <mlx.h>
 #include <math.h>
 
+#define DR 0.017453
+#define FOV 60
+
 typedef struct	s_img {
 	void	*img;
 	char	*addr;
@@ -56,6 +59,24 @@ void	draw_square(t_img *img, int x, int y, int size, int color)
 	{
 		j = 0;
 		while (j < size)
+		{
+			my_mlx_pixel_put(img, x + j, y + i, color);
+			j++;
+		}
+		i++;
+	}
+}
+
+void	draw_rectangle(t_img *img, double x, double y, int h, int w, int color)
+{
+	int	i;
+	int	j;
+
+	i = 0;
+	while (i < h)
+	{
+		j = 0;
+		while (j < w)
 		{
 			my_mlx_pixel_put(img, x + j, y + i, color);
 			j++;
@@ -162,31 +183,33 @@ t_point set_dist(t_player *p, t_point *r)
 	return (*r);
 }
 
-t_point	get_h_dist(t_player *p)
+t_point	get_h_dist(t_player *p, double ra)
 {
 	t_point	r;
 	double	xo;
 	double	yo;
+	double	a_tan;
 	int	my;
 	int	mx;
 	int	mp;
 	int	dof;
 	
 	dof = 0;
-	r.a = p->a;
+	r.a = ra;
+	a_tan = -1/tan(r.a);
 	if (r.a > M_PI)
 	{
 		r.y = (((int)p->y / 64) * 64) - 0.0001;
-		r.x = (p->y - r.y) * -1/tan(p->a) + p->x;
+		r.x = (p->y - r.y) * a_tan + p->x;
 		yo = -64;
-		xo = -yo * -1/tan(p->a);
+		xo = -yo * a_tan;
 	}
 	else if (r.a < M_PI)
 	{
 		r.y = (((int)p->y / 64) * 64) + 64;
-		r.x = (p->y - r.y) * -1/tan(p->a) + p->x;
+		r.x = (p->y - r.y) * a_tan + p->x;
 		yo = 64;
-		xo = -yo * -1/tan(p->a);
+		xo = -yo * a_tan;
 	}
 	else
 	{
@@ -212,31 +235,33 @@ t_point	get_h_dist(t_player *p)
 	return (r);
 }
 
-t_point	get_v_dist(t_player *p)
+t_point	get_v_dist(t_player *p, double ra)
 {
 	t_point	r;
 	double	xo;
 	double	yo;
+	double	n_tan;
 	int	my;
 	int	mx;
 	int	mp;
 	int	dof;
 	
 	dof = 0;
-	r.a = p->a;
+	r.a = ra;
+	n_tan = -tan(r.a);
 	if (r.a > M_PI_2 && r.a < 3 * M_PI_2)
 	{
 		r.x = (((int)p->x / 64) * 64) - 0.0001;
-		r.y = (p->x - r.x) * -tan(p->a) + p->y;
+		r.y = (p->x - r.x) * n_tan + p->y;
 		xo = -64;
-		yo = -xo * -tan(p->a);
+		yo = -xo * n_tan;
 	}
 	else if (r.a < M_PI_2 || r.a > 3 * M_PI_2)
 	{
 		r.x = (((int)p->x / 64) * 64) + 64;
-		r.y = (p->x - r.x) * -tan(p->a) + p->y;
+		r.y = (p->x - r.x) * n_tan + p->y;
 		xo = 64;
-		yo = -xo * -tan(p->a);
+		yo = -xo * n_tan;
 	}
 	else
 	{
@@ -260,19 +285,78 @@ t_point	get_v_dist(t_player *p)
 	}
 	r.dist = 100000;
 	return (r);
+}
+
+double	fix_angle(double a)
+{
+	if (a < 0)
+		a += 2 * M_PI;
+	if (a > 2 * M_PI)
+		a -= 2 * M_PI;
+	return (a);
+}
+
+void	draw_window(t_img *img, int h, int w, int color)
+{
+	int	i;
+	int	j;
+
+	i = 0;
+	while (i < h)
+	{
+		j = 0;
+		while (j < w)
+		{
+			my_mlx_pixel_put(img, (j + mapX * mapS) + 50, i, color);
+			j++;
+		}
+		i++;
+	}
+}
+
+void	ft_3dprojection(t_img *img, double dist_t, int i)
+{
+	double	scale;
+	double	line_h;
+	double	line_o;
+	double	initial_x;
+
+	initial_x = (mapX * mapS) + 50;
+	scale = (512 / 2) / tan(FOV / 2 * DR);
+	line_h = mapS / dist_t * scale;
+	line_o = (512 / 2) - line_h / 2;
+	draw_rectangle(img, initial_x + (i * 8), line_o, line_h, 8, 0x00FF0000);
 }
 
 void	draw_rays(t_game *game)
 {
 	t_point vp;
 	t_point	hp;
+	double	ra;
+	double	dist_t;
 
-	vp = get_v_dist(&game->player);
-	hp = get_h_dist(&game->player);
-	if (vp.dist < hp.dist)
-		draw_line(&game->img, game->player.x, game->player.y, vp.x, vp.y);
-	else
-		draw_line(&game->img, game->player.x, game->player.y, hp.x, hp.y);
+	ra = game->player.a - (DR * FOV / 2);
+	ra = fix_angle(ra);
+	draw_window(&game->img, 512, 480, 0x00808080);
+	for (int i = 0; i < FOV; i ++)
+	{
+		vp = get_v_dist(&game->player, ra);
+		hp = get_h_dist(&game->player, ra);
+		if (vp.dist < hp.dist)
+		{
+			draw_line(&game->img, game->player.x, game->player.y, vp.x, vp.y);
+			dist_t = vp.dist;
+		}
+		else
+		{
+			draw_line(&game->img, game->player.x, game->player.y, hp.x, hp.y);
+			dist_t = hp.dist;
+		}
+		ra += DR;
+		ra = fix_angle(ra);
+		ft_3dprojection(&game->img, dist_t, i);
+	}
+	//draw_rectangle(&game->img, (mapX * mapS) + 50, 0, 100, 8, 0x00FF0000);
 }
 
 int	key_press(int key_code, t_game *game)
@@ -373,7 +457,7 @@ int	main(int argc, char **argv)
 	game.img.addr = mlx_get_data_addr(game.img.img, &game.img.bits_per_pixel, &game.img.line_length, &game.img.endian);
 	game.player.x = 300;
 	game.player.y = 300;
-	game.player.a = 0;
+	game.player.a = 3 * M_PI_2;
 	game.player.dx = cos(game.player.a);
 	game.player.dy = sin(game.player.a);
 	game.player.up_pressed = 0;
