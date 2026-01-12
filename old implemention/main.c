@@ -314,25 +314,58 @@ void	draw_window(t_img *img, int h, int w, int color)
 	}
 }
 
+// 60 rayos
 void	ft_3dprojection(t_img *img, double dist_t, int i)
 {
+	int	draw_start;
 	double	scale;
 	double	line_h;
-	double	line_o;
 	double	initial_x;
 
 	initial_x = (mapX * mapS) + 50;
 	scale = (512 / 2) / tan(FOV / 2 * DR);
 	line_h = mapS / dist_t * scale;
-	line_o = (512 / 2) - line_h / 2;
-	draw_rectangle(img, initial_x + (i * 8), line_o, line_h, 8, 0x00FF0000);
+	draw_start = (512 / 2) - line_h / 2;
+	if (draw_start < 0)
+		draw_start = 0;
+	if ((512 / 2) + line_h / 2 >= 512)
+		line_h = 512 - draw_start;
+	draw_rectangle(img, initial_x + (i * 8), draw_start, line_h, 8, 0x00FF0000);
 }
 
+/*void	ft_3dprojection(t_img *img, double dist_t, int i)
+{
+	int	draw_start;
+	int	draw_end;
+	int	y;
+	double	scale;
+	double	line_h;
+	double	initial_x;
+
+	initial_x = (mapX * mapS) + 50;
+	scale = (512 / 2) / tan(FOV / 2 * DR);
+	line_h = mapS / dist_t * scale;
+	draw_start = (512 / 2) - line_h / 2;
+	if (draw_start < 0)
+		draw_start = 0;
+	draw_end = (512 / 2) + line_h / 2;
+	if (draw_end >= 512)
+		draw_end = 512;
+	y = draw_start;
+	while (y < draw_end)
+	{
+		my_mlx_pixel_put(img, initial_x + i, y, 0x00FF0000);
+		y++;
+	}
+}*/
+
+// 60 rayos
 void	draw_rays(t_game *game)
 {
 	t_point vp;
 	t_point	hp;
 	double	ra;
+	double	ca;
 	double	dist_t;
 
 	ra = game->player.a - (DR * FOV / 2);
@@ -352,12 +385,50 @@ void	draw_rays(t_game *game)
 			draw_line(&game->img, game->player.x, game->player.y, hp.x, hp.y);
 			dist_t = hp.dist;
 		}
+		ca = cos(ra - game->player.a);
+		ca = fix_angle(ca);
+		dist_t = dist_t * ca;
+		ft_3dprojection(&game->img, dist_t, i);
 		ra += DR;
 		ra = fix_angle(ra);
-		ft_3dprojection(&game->img, dist_t, i);
 	}
-	//draw_rectangle(&game->img, (mapX * mapS) + 50, 0, 100, 8, 0x00FF0000);
 }
+
+/*void	draw_rays(t_game *game)
+{
+	t_point vp;
+	t_point	hp;
+	double	ra;
+	double	ca;
+	double	dist_t;
+
+	ra = game->player.a - (DR * FOV / 2);
+	ra = fix_angle(ra);
+	draw_window(&game->img, 512, 480, 0x00808080);
+	for (int i = 0; i < 480; i ++)
+	{
+		vp = get_v_dist(&game->player, ra);
+		hp = get_h_dist(&game->player, ra);
+		if (vp.dist < hp.dist)
+		{
+			if (i % 8 == 0)
+				draw_line(&game->img, game->player.x, game->player.y, vp.x, vp.y);
+			dist_t = vp.dist;
+		}
+		else
+		{
+			if (i % 8 == 0)
+				draw_line(&game->img, game->player.x, game->player.y, hp.x, hp.y);
+			dist_t = hp.dist;
+		}
+		ca = cos(ra - game->player.a);
+		ca = fix_angle(ca);
+		dist_t = dist_t * ca;
+		ft_3dprojection(&game->img, dist_t, i);
+		ra += (DR * FOV) / 480;
+		ra = fix_angle(ra);
+	}
+}*/
 
 int	key_press(int key_code, t_game *game)
 {
