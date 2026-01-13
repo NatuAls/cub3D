@@ -38,17 +38,17 @@ int	copy_map_lines(t_game *game, char **lines)
 
 int	init_hardcoded_map(t_game *game)
 {
-	char	*lines[9];
-
-	lines[0] = "11111111";
-	lines[1] = "10001001";
-	lines[2] = "10001001";
-	lines[3] = "10111001";
-	lines[4] = "1000N001";
-	lines[5] = "10000001";
-	lines[6] = "10000001";
-	lines[7] = "11111111";
-	lines[8] = NULL;
+	static char	*lines[] = {
+		"11111111",
+		"10001001",
+	    "10001001",
+		"10111001",
+		"1000N001",
+		"10000001",
+		"10000001",
+		"11111111",
+		NULL
+	};
 	game->map.height = 8;
 	if (!copy_map_lines(game, lines))
 		return (0);

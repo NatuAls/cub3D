@@ -29,6 +29,7 @@ int	main(int argc, char **argv)
 {
 	t_game	game;
 
+	ft_printf("AHORA SIIIIUUUUU!!\n");
 	(void)argc;
 	(void)argv;
 	memset(&game, 0, sizeof(t_game));

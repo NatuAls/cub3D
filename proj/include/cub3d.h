@@ -2,6 +2,7 @@
 # define CUB3D_H
 
 # include <../minilibx-linux/mlx.h>
+# include <../libft/libft.h>
 # include <math.h>
 # include <stdlib.h>
 # include <unistd.h>
