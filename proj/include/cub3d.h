@@ -9,6 +9,7 @@
 # include <fcntl.h>
 # include <stdio.h>
 # include <string.h>
+# include <errno.h>
 
 # define WIN_WIDTH 1280
 # define WIN_HEIGHT 720
@@ -66,6 +67,14 @@ typedef struct s_map
 	int		height;
 }	t_map;
 
+typedef struct s_tex
+{
+	char	*path_no;
+	char	*path_so;
+	char	*path_we;
+	char	*path_ea;
+}	t_tex;
+
 typedef struct s_color
 {
 	int		r;
@@ -109,6 +118,7 @@ typedef struct s_game
 	t_map		map;
 	t_color		floor;
 	t_color		ceiling;
+	t_tex		tex;
 }	t_game;
 
 int		init_game(t_game *game);
@@ -146,9 +156,14 @@ void	rotate_right(t_game *game);
 void	rotate_player(t_player *p, double angle);
 
 int		can_move(t_game *game, double x, double y);
+int		ft_error_msg(char *msg);
+int		ft_error_sys(char *msg);
 void	free_game(t_game *game);
 void	free_map(t_game *game);
-int		ft_strlen_safe(char *str);
+int		validate_args(int argc, char **argv);
+
+int		parser(t_game *game, char *str);
+int		parse_tex(t_game *game, int fd);
 
 int		init_hardcoded_map(t_game *game);
 int		find_player(t_game *game);

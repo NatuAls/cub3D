@@ -27,7 +27,7 @@ int	copy_map_lines(t_game *game, char **lines)
 		game->map.grid[i] = strdup(lines[i]);
 		if (!game->map.grid[i])
 			return (0);
-		len = ft_strlen_safe(game->map.grid[i]);
+		len = ft_strlen(game->map.grid[i]);
 		if (len > game->map.width)
 			game->map.width = len;
 		i++;

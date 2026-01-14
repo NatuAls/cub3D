@@ -1,15 +1,40 @@
 #include "cub3d.h"
 
-int	ft_strlen_safe(char *str)
+int	validate_args(int argc, char **argv)
 {
-	int	len;
+	char	*str;
+	int	fd;
 
-	if (!str)
-		return (0);
-	len = 0;
-	while (str[len])
-		len++;
-	return (len);
+	if (argc != 2)
+		return (ft_error_msg("There should only be one .cub extension argument."));
+	str = ft_strrchr(argv[1], '.');
+	if (str && !ft_strncmp(str, ".cub", 5))
+	{
+		fd = open(argv[1], O_RDONLY);
+		if (fd == -1)
+			return (ft_error_sys("open"));
+		close(fd);
+		return (1);
+	}
+	return (ft_error_msg("Invalid file extension: must be .cub"));
+}
+
+int	ft_error_msg(char *msg)
+{
+	ft_putstr_fd("Error\n", 2);
+	ft_putstr_fd(msg, 2);
+	ft_putstr_fd("\n", 2);
+	return (0);
+}
+
+int	ft_error_sys(char *msg)
+{
+	ft_putstr_fd("Error\n", 2);
+	ft_putstr_fd(msg, 2);
+	ft_putstr_fd(": ", 2);
+	ft_putstr_fd(strerror(errno), 2);
+	ft_putstr_fd("\n", 2);
+	return (0);
 }
 
 void	free_map(t_game *game)

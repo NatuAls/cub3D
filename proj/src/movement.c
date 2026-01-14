@@ -9,7 +9,7 @@ int	can_move(t_game *game, double x, double y)
 	map_y = (int)y;
 	if (map_y < 0 || map_y >= game->map.height)
 		return (0);
-	if (map_x < 0 || map_x >= ft_strlen_safe(game->map.grid[map_y]))
+	if (map_x < 0 || map_x >= (int)ft_strlen(game->map.grid[map_y]))
 		return (0);
 	if (game->map.grid[map_y][map_x] == '1')
 		return (0);

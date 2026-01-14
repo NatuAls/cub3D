@@ -6,7 +6,7 @@ static int	is_out_of_bounds(t_game *game, t_ray *ray)
 
 	if (ray->map_y < 0 || ray->map_y >= game->map.height)
 		return (1);
-	row_len = ft_strlen_safe(game->map.grid[ray->map_y]);
+	row_len = ft_strlen(game->map.grid[ray->map_y]);
 	if (ray->map_x < 0 || ray->map_x >= row_len)
 		return (1);
 	return (0);

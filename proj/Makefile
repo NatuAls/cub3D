@@ -24,7 +24,9 @@ SRCS = $(SRC_DIR)/main.c \
        $(SRC_DIR)/events.c \
        $(SRC_DIR)/movement.c \
        $(SRC_DIR)/rotation.c \
-       $(SRC_DIR)/utils.c
+       $(SRC_DIR)/utils.c \
+       $(SRC_DIR)/parser.c \
+       $(SRC_DIR)/parse_tex.c
 
 OBJS = $(SRCS:$(SRC_DIR)/%.c=$(OBJ_DIR)/%.o)
 
