@@ -38,6 +38,8 @@ int	main(int argc, char **argv)
 	ft_printf("SO:%s$\n", game.tex.path_so);
 	ft_printf("WE:%s$\n", game.tex.path_we);
 	ft_printf("EA:%s$\n", game.tex.path_ea);
+	ft_printf("C r:%d, g:%d, b:%d, hecx:%d\n", game.ceiling->r, game.ceiling->g, game.ceiling->b, game.ceiling->hex);
+	ft_printf("F r:%d, g:%d, b:%d, hecx:%d\n", game.floor->r, game.floor->g, game.floor->b, game.floor->hex);
 	if (!init_all(&game))
 	{
 		write(2, "Error\nInitialization failed\n", 28);

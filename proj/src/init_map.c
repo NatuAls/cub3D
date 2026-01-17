@@ -1,6 +1,6 @@
 #include "cub3d.h"
 
-void	init_colors(t_game *game)
+/*void	init_colors(t_game *game)
 {
 	game->floor.r = 100;
 	game->floor.g = 100;
@@ -10,7 +10,7 @@ void	init_colors(t_game *game)
 	game->ceiling.g = 50;
 	game->ceiling.b = 80;
 	game->ceiling.hex = (50 << 16) | (50 << 8) | 80;
-}
+}*/
 
 int	copy_map_lines(t_game *game, char **lines)
 {
@@ -52,7 +52,7 @@ int	init_hardcoded_map(t_game *game)
 	game->map.height = 8;
 	if (!copy_map_lines(game, lines))
 		return (0);
-	init_colors(game);
+	//init_colors(game);
 	return (1);
 }
 

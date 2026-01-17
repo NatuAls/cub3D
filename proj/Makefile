@@ -26,7 +26,8 @@ SRCS = $(SRC_DIR)/main.c \
        $(SRC_DIR)/rotation.c \
        $(SRC_DIR)/utils.c \
        $(SRC_DIR)/parser.c \
-       $(SRC_DIR)/parse_tex.c
+       $(SRC_DIR)/parse_identifiers.c \
+       $(SRC_DIR)/parse_color.c
 
 OBJS = $(SRCS:$(SRC_DIR)/%.c=$(OBJ_DIR)/%.o)
 

@@ -1,5 +1,15 @@
 #include "cub3d.h"
 
+void	init_identifiers(t_game *game)
+{
+	game->tex.path_no = NULL;
+	game->tex.path_so = NULL;
+	game->tex.path_we = NULL;
+	game->tex.path_ea = NULL;
+	game->ceiling = NULL;
+	game->floor = NULL;
+}
+
 int	parser(t_game *game, char *path)
 {
 	int	fd;
@@ -7,7 +17,12 @@ int	parser(t_game *game, char *path)
 	fd = open(path, O_RDONLY);
 	if (fd == -1)
 		return (ft_error_sys("open"));
-	if (!parse_tex(game, fd))
+	init_identifiers(game);
+	if (!parse_identifiers(game, fd))
+	{
+		close(fd);
 		return (0);
+	}
+	close(fd);
 	return (1);
 }

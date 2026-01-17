@@ -14,8 +14,8 @@
 # define WIN_WIDTH 1280
 # define WIN_HEIGHT 720
 # define TEX_SIZE 64
-# define MOVE_SPEED 0.05
-# define ROT_SPEED 0.03
+# define MOVE_SPEED 0.005
+# define ROT_SPEED 0.003
 
 # define KEY_W 119
 # define KEY_A 97
@@ -116,8 +116,8 @@ typedef struct s_game
 	t_player	player;
 	t_keys		keys;
 	t_map		map;
-	t_color		floor;
-	t_color		ceiling;
+	t_color		*floor;
+	t_color		*ceiling;
 	t_tex		tex;
 }	t_game;
 
@@ -163,7 +163,8 @@ void	free_map(t_game *game);
 int		validate_args(int argc, char **argv);
 
 int		parser(t_game *game, char *str);
-int		parse_tex(t_game *game, int fd);
+int		parse_identifiers(t_game *game, int fd);
+int		parse_color(t_color **color, char *line);
 
 int		init_hardcoded_map(t_game *game);
 int		find_player(t_game *game);

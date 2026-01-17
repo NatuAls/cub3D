@@ -41,7 +41,7 @@ void	draw_ver_line(t_game *game, int x, t_draw *draw)
 	y = 0;
 	while (y < draw->draw_start)
 	{
-		put_pixel(&game->frame, x, y, game->ceiling.hex);
+		put_pixel(&game->frame, x, y, game->ceiling->hex);
 		y++;
 	}
 	while (y < draw->draw_end)
@@ -51,7 +51,7 @@ void	draw_ver_line(t_game *game, int x, t_draw *draw)
 	}
 	while (y < WIN_HEIGHT)
 	{
-		put_pixel(&game->frame, x, y, game->floor.hex);
+		put_pixel(&game->frame, x, y, game->floor->hex);
 		y++;
 	}
 }
