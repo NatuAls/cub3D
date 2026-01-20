@@ -30,6 +30,7 @@ void	init_player_dir(t_player *p, char dir)
 
 void	init_player(t_game *game, char dir, double x, double y)
 {
+	game->player.initialized = 1;
 	game->player.pos_x = x;
 	game->player.pos_y = y;
 	if (dir == 'N' || dir == 'S')

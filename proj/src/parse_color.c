@@ -67,7 +67,7 @@ void    ft_free_matrix(char **str)
     free(str);
 }
 
-int	parse_color(t_color **color, char *line)
+int	parse_color(t_color *color, char *line)
 {
 	int		    i;
     char    **rgb;
@@ -78,17 +78,9 @@ int	parse_color(t_color **color, char *line)
     rgb = ft_split(line + i, ',');
     if (!rgb)
         return (ft_error_sys("split"));
-    *color = ft_calloc(sizeof(t_color), 1);
-	if (!*color)
+    if (!fill_rgb(color, rgb))
     {
         ft_free_matrix(rgb);
-        return (ft_error_sys("calloc"));
-    }
-    if (!fill_rgb(*color, rgb))
-    {
-        ft_free_matrix(rgb);
-        free(*color);
-        *color = NULL;
         return (0);
     }
     ft_free_matrix(rgb);
