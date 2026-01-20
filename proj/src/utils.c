@@ -53,6 +53,33 @@ void	free_map(t_game *game)
 	game->map.grid = NULL;
 }
 
+void	free_mapl(t_mapl *list)
+{
+	t_mapl	*tmp;
+
+	tmp = list;
+	while (list)
+	{
+		tmp = list->next;
+		if (list->line)
+			free(list->line);
+		free(list);
+		list = tmp;
+	}
+}
+
+void	free_tex(t_tex *tex)
+{
+	if (tex->path_ea)
+		free(tex->path_ea);
+	if (tex->path_no)
+		free(tex->path_no);
+	if (tex->path_so)
+		free(tex->path_so);
+	if (tex->path_we)
+		free(tex->path_we);
+}
+
 void	free_game(t_game *game)
 {
 	if (game->frame.img && game->mlx)
@@ -65,4 +92,7 @@ void	free_game(t_game *game)
 		free(game->mlx);
 	}
 	free_map(game);
+	if (game->list)
+		free_mapl(game->list);
+	free_tex(&game->tex);
 }

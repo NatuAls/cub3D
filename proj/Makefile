@@ -27,7 +27,9 @@ SRCS = $(SRC_DIR)/main.c \
        $(SRC_DIR)/utils.c \
        $(SRC_DIR)/parser.c \
        $(SRC_DIR)/parse_identifiers.c \
-       $(SRC_DIR)/parse_color.c
+       $(SRC_DIR)/parse_color.c \
+       $(SRC_DIR)/parse_map.c \
+       $(SRC_DIR)/validate_map.c
 
 OBJS = $(SRCS:$(SRC_DIR)/%.c=$(OBJ_DIR)/%.o)
 
