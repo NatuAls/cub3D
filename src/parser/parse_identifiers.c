@@ -1,9 +1,23 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   parse_identifiers.c                                :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: nalesso <nalesso@student.42.fr>            +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2026/02/03 17:52:15 by nalesso           #+#    #+#             */
+/*   Updated: 2026/02/03 17:55:37 by nalesso          ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "cub3d.h"
 
 int	parse_tex_path(char **identifier, char *line)
 {
 	int		i;
 
+	if (*identifier)
+		return(ft_error_msg("Duplicate texture identifier"));
 	i = 2;
 	while (line[i] && (line[i] == ' ' || line[i] == '\t'))
 		i++;
@@ -17,20 +31,20 @@ int	parse_line_content(t_game *game, char *line)
 {
 	int	res;
 
-	if (!ft_strncmp(line, "NO", 2) && !game->tex.path_no)
+	if (!ft_strncmp(line, "NO", 2))
 		res = parse_tex_path(&game->tex.path_no, line);
-	else if (!ft_strncmp(line, "SO", 2) && !game->tex.path_so)
+	else if (!ft_strncmp(line, "SO", 2))
 		res = parse_tex_path(&game->tex.path_so, line);
-	else if (!ft_strncmp(line, "WE", 2) && !game->tex.path_we)
+	else if (!ft_strncmp(line, "WE", 2))
 		res = parse_tex_path(&game->tex.path_we, line);
-	else if (!ft_strncmp(line, "EA", 2) && !game->tex.path_ea)
+	else if (!ft_strncmp(line, "EA", 2))
 		res = parse_tex_path(&game->tex.path_ea, line);
-	else if (line[0] == 'C' && game->ceiling.hex == -1)
+	else if (line[0] == 'C')
 		res = parse_color(&game->ceiling, line);
-	else if (line[0] == 'F' && game->floor.hex == -1)
+	else if (line[0] == 'F')
 		res = parse_color(&game->floor, line);
 	else
-		return (ft_error_msg("Invalid or duplicate identifier"));
+		return (ft_error_msg("Invalid identifier"));
 	return (res);
 }
 

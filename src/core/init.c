@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   init.c                                             :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: nalesso <nalesso@student.42.fr>            +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2026/02/03 17:52:57 by nalesso           #+#    #+#             */
+/*   Updated: 2026/02/03 17:58:24 by nalesso          ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "cub3d.h"
 
 void	init_keys(t_game *game)
@@ -70,12 +82,12 @@ int	init_game(t_game *game)
 	init_keys(game);
 	game->mlx = mlx_init();
 	if (!game->mlx)
-		return (0);
+		return (ft_error_msg("Initialization failed"));
 	game->win = mlx_new_window(game->mlx, WIN_WIDTH, WIN_HEIGHT, "cub3D");
 	if (!game->win)
-		return (0);
+		return (ft_error_msg("Initialization failed"));
 	if (!init_mlx_image(game))
-		return (0);
+		return (ft_error_msg("Initialization failed"));
 	if (!load_all_textures(game))
 		return (0);
 	return (1);

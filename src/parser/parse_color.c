@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   parse_color.c                                      :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: nalesso <nalesso@student.42.fr>            +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2026/02/03 17:52:07 by nalesso           #+#    #+#             */
+/*   Updated: 2026/02/03 17:56:09 by nalesso          ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "cub3d.h"
 
 int	is_valid_digit(char *str)
@@ -72,6 +84,8 @@ int	parse_color(t_color *color, char *line)
 	int		i;
 	char	**rgb;
 
+	if (color->hex != -1)
+		return (ft_error_msg("Duplicate color identifier"));
 	i = 1;
 	while (line[i] && (line[i] == ' ' || line[i] == '\t'))
 		i++;
