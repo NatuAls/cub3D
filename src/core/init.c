@@ -6,7 +6,7 @@
 /*   By: nalesso <nalesso@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/03 17:52:57 by nalesso           #+#    #+#             */
-/*   Updated: 2026/02/03 17:58:24 by nalesso          ###   ########.fr       */
+/*   Updated: 2026/02/05 17:20:14 by nalesso          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,6 +79,7 @@ static int	init_mlx_image(t_game *game)
 
 int	init_game(t_game *game)
 {
+	game->last_mouse_x = -1;
 	init_keys(game);
 	game->mlx = mlx_init();
 	if (!game->mlx)

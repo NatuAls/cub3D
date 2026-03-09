@@ -6,13 +6,12 @@
 /*   By: nalesso <nalesso@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/03 17:53:05 by nalesso           #+#    #+#             */
-/*   Updated: 2026/02/03 17:58:24 by nalesso          ###   ########.fr       */
+/*   Updated: 2026/02/05 18:16:10 by nalesso          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef CUB3D_H
 # define CUB3D_H
-
 
 # include <../minilibx-linux/mlx.h>
 # include <../libft/libft.h>
@@ -29,6 +28,7 @@
 # define TEX_SIZE 64
 # define MOVE_SPEED 0.05
 # define ROT_SPEED 0.03
+# define M_ROT_SPEED 0.003
 
 # define KEY_W 119
 # define KEY_A 97
@@ -41,6 +41,7 @@
 # define EVT_PRESS 2
 # define EVT_RELEASE 3
 # define EVT_DESTROY 17
+# define EVT_MOUSE_MOVE 6
 
 typedef struct s_img
 {
@@ -90,20 +91,20 @@ typedef struct s_map
 
 typedef struct s_line
 {
-    double  x;
-    double  y;
-    double  dx;
-    double  dy;
-    int     steps;
-}   t_line;
+	double	x;
+	double	y;
+	double	dx;
+	double	dy;
+	int		steps;
+}	t_line;
 
 typedef struct s_rect
 {
-	int x;
-	int y;
-	int width;
-	int height;
-}   t_rect;
+	int	x;
+	int	y;
+	int	width;
+	int	height;
+}	t_rect;
 
 typedef struct s_tex
 {
@@ -154,6 +155,7 @@ typedef struct s_game
 {
 	void		*mlx;
 	void		*win;
+	int			last_mouse_x;
 	t_img		frame;
 	t_player	player;
 	t_keys		keys;
@@ -197,6 +199,7 @@ void	strafe_right(t_game *game);
 void	rotate_left(t_game *game);
 void	rotate_right(t_game *game);
 void	rotate_player(t_player *p, double angle);
+int		mouse_move(int x, int y, t_game *game);
 
 int		can_move(t_game *game, double x, double y);
 int		ft_error_msg(char *msg);
@@ -227,10 +230,10 @@ int		load_all_textures(t_game *game);
 int		get_texture_pixel(t_img *tex, int x, int y);
 
 void	draw_rect(t_img *img, t_rect *square, int color);
-void    draw_minimap_tiles(t_game *game, t_rect *tile, int margin);
-void    draw_minimap_player(t_game *game, int margin, int tile_size);
-void    draw_minimap_line(t_game *game, double bx, double by);
-void    draw_minimap_border(t_game *game, t_rect *b);
-void    draw_minimap(t_game *game);
+void	draw_minimap_tiles(t_game *game, t_rect *tile, int margin);
+void	draw_minimap_player(t_game *game, int margin, int tile_size);
+void	draw_minimap_line(t_game *game, double bx, double by);
+void	draw_minimap_border(t_game *game, t_rect *b);
+void	draw_minimap(t_game *game);
 
 #endif

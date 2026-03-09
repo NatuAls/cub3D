@@ -6,7 +6,7 @@
 /*   By: nalesso <nalesso@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/03 17:52:58 by nalesso           #+#    #+#             */
-/*   Updated: 2026/02/03 17:58:24 by nalesso          ###   ########.fr       */
+/*   Updated: 2026/02/05 18:22:04 by nalesso          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,7 @@ static void	setup_hooks(t_game *game)
 	mlx_hook(game->win, EVT_PRESS, 1L << 0, key_press, game);
 	mlx_hook(game->win, EVT_RELEASE, 1L << 1, key_release, game);
 	mlx_hook(game->win, EVT_DESTROY, 0, close_window, game);
+	mlx_hook(game->win, EVT_MOUSE_MOVE, 1L << 6, mouse_move, game);
 	mlx_loop_hook(game->mlx, game_loop, game);
 }
 

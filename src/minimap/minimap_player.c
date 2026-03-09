@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minimap_player.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nalesso <marvin@42.fr>                     +#+  +:+       +#+        */
+/*   By: arhea <arhea@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/03 17:50:03 by nalesso           #+#    #+#             */
-/*   Updated: 2026/02/03 17:50:07 by nalesso          ###   ########.fr       */
+/*   Updated: 2026/02/03 22:59:43 by arhea            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,18 +30,18 @@ void	draw_rect(t_img *img, t_rect *square, int color)
 	}
 }
 
-void    draw_minimap_player(t_game *game, int margin, int tile_size)
+void	draw_minimap_player(t_game *game, int margin, int tile_size)
 {
-    t_rect p;
-    int     cx;
-    int     cy;
+	t_rect	p;
+	int		cx;
+	int		cy;
 
-    cx = margin + (10 * tile_size);
-    cy = margin + (6 * tile_size);
-    p.x = cx + 3;
-    p.y = cy + 3;
-    p.width = 6;
-    p.height = 6;
-    draw_rect(&game->frame, &p, 0xFF0000);
-    draw_minimap_line(game, p.x + 3, p.y + 3);
+	cx = margin + (10 * tile_size);
+	cy = margin + (6 * tile_size);
+	p.x = cx + 3;
+	p.y = cy + 3;
+	p.width = 6;
+	p.height = 6;
+	draw_rect(&game->frame, &p, 0xFF0000);
+	draw_minimap_line(game, p.x + 3, p.y + 3);
 }

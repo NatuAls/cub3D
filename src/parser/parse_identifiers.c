@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parse_identifiers.c                                :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nalesso <nalesso@student.42.fr>            +#+  +:+       +#+        */
+/*   By: arhea <arhea@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/03 17:52:15 by nalesso           #+#    #+#             */
-/*   Updated: 2026/02/03 17:55:37 by nalesso          ###   ########.fr       */
+/*   Updated: 2026/02/03 22:59:24 by arhea            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@ int	parse_tex_path(char **identifier, char *line)
 	int		i;
 
 	if (*identifier)
-		return(ft_error_msg("Duplicate texture identifier"));
+		return (ft_error_msg("Duplicate texture identifier"));
 	i = 2;
 	while (line[i] && (line[i] == ' ' || line[i] == '\t'))
 		i++;
